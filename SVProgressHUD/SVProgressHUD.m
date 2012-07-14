@@ -61,14 +61,26 @@
 	[[SVProgressHUD sharedView] setStatus:string];
 }
 
+static SVProgressHUDMaskType defaultMaskType = SVProgressHUDMaskTypeNone;
+
++ (void)setDefaultMaskType:(SVProgressHUDMaskType)maskType {
+    defaultMaskType = maskType;
+}
+
+static BOOL ignoreKeyboard = NO;
+
++ (void)setIgnoreKeyboard:(BOOL)ignore {
+    ignoreKeyboard = ignore;
+}
+
 #pragma mark - Show Methods
 
 + (void)show {
-    [[SVProgressHUD sharedView] showWithStatus:nil maskType:SVProgressHUDMaskTypeNone networkIndicator:NO];
+    [[SVProgressHUD sharedView] showWithStatus:nil maskType:defaultMaskType networkIndicator:NO];
 }
 
 + (void)showWithStatus:(NSString *)status {
-    [[SVProgressHUD sharedView] showWithStatus:status maskType:SVProgressHUDMaskTypeNone networkIndicator:NO];
+    [[SVProgressHUD sharedView] showWithStatus:status maskType:defaultMaskType networkIndicator:NO];
 }
 
 + (void)showWithMaskType:(SVProgressHUDMaskType)maskType {
@@ -274,6 +286,10 @@
             keyboardHeight = 0;
     } else {
         keyboardHeight = self.visibleKeyboardHeight;
+    }
+    
+    if(ignoreKeyboard) {
+        keyboardHeight = 0;
     }
     
     CGRect orientationFrame = [UIScreen mainScreen].bounds;

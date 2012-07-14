@@ -21,6 +21,9 @@ typedef NSUInteger SVProgressHUDMaskType;
 
 @interface SVProgressHUD : UIView
 
++ (void)setDefaultMaskType:(SVProgressHUDMaskType)maskType;  // Subsequent calls to the show[WithStatus:] methods will use this mask type.
++ (void)setIgnoreKeyboard:(BOOL)ignore;  // if ignore == YES, disregard the keyboard when calculating the position. Default is NO.
+
 + (void)show;
 + (void)showWithMaskType:(SVProgressHUDMaskType)maskType;
 
