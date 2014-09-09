@@ -292,9 +292,13 @@ static BOOL ignoreKeyboard = NO;
     CGRect statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
     
     if(UIInterfaceOrientationIsLandscape(orientation)) {
-        float temp = orientationFrame.size.width;
-        orientationFrame.size.width = orientationFrame.size.height;
-        orientationFrame.size.height = temp;
+        float temp;
+        
+        if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")){
+            temp = orientationFrame.size.width;
+            orientationFrame.size.width = orientationFrame.size.height;
+            orientationFrame.size.height = temp;
+        }
         
         temp = statusBarFrame.size.width;
         statusBarFrame.size.width = statusBarFrame.size.height;
