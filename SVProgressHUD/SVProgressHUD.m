@@ -48,7 +48,18 @@
 + (SVProgressHUD*)sharedView {
     static dispatch_once_t once;
     static SVProgressHUD *sharedView;
-    dispatch_once(&once, ^ { sharedView = [[SVProgressHUD alloc] initWithFrame:[[UIScreen mainScreen] bounds]]; });
+    dispatch_once(&once, ^ {
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") && UIInterfaceOrientationIsLandscape(orientation)) {
+            CGRect frame = [[UIScreen mainScreen] bounds];
+            CGFloat temp = frame.size.width;
+            frame.size.width = frame.size.height;
+            frame.size.height = temp;
+            sharedView = [[SVProgressHUD alloc] initWithFrame:frame];
+        } else {
+            sharedView = [[SVProgressHUD alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        }
+    });
     return sharedView;
 }
 
