@@ -9,6 +9,7 @@
 
 #import "SVProgressHUD.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UIScreen+SN.h"
 
 @interface SVProgressHUD ()
 
@@ -49,16 +50,7 @@
     static dispatch_once_t once;
     static SVProgressHUD *sharedView;
     dispatch_once(&once, ^ {
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0") && UIInterfaceOrientationIsLandscape(orientation)) {
-            CGRect frame = [[UIScreen mainScreen] bounds];
-            CGFloat temp = frame.size.width;
-            frame.size.width = frame.size.height;
-            frame.size.height = temp;
-            sharedView = [[SVProgressHUD alloc] initWithFrame:frame];
-        } else {
-            sharedView = [[SVProgressHUD alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        }
+        sharedView = [[SVProgressHUD alloc] initWithFrame:[UIScreen mainScreenNativeBounds]];
     });
     return sharedView;
 }
@@ -285,12 +277,14 @@ static BOOL ignoreKeyboard = NO;
         animationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
         
         if(notification.name == UIKeyboardWillShowNotification || notification.name == UIKeyboardDidShowNotification) {
-            if(UIInterfaceOrientationIsPortrait(orientation))
+            if(UIInterfaceOrientationIsPortrait(orientation) || SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
                 keyboardHeight = keyboardFrame.size.height;
-            else
+            } else {
                 keyboardHeight = keyboardFrame.size.width;
-        } else
+            }
+        } else {
             keyboardHeight = 0;
+        }
     } else {
         keyboardHeight = self.visibleKeyboardHeight;
     }
@@ -299,27 +293,20 @@ static BOOL ignoreKeyboard = NO;
         keyboardHeight = 0;
     }
     
-    CGRect orientationFrame = [UIScreen mainScreen].bounds;
+    CGRect orientationFrame = [UIScreen mainScreenCurrentOrientationBounds];
     CGRect statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
     
-    if(UIInterfaceOrientationIsLandscape(orientation)) {
-        float temp;
-        
-        if(!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")){
-            temp = orientationFrame.size.width;
-            orientationFrame.size.width = orientationFrame.size.height;
-            orientationFrame.size.height = temp;
-        }
-        
-        temp = statusBarFrame.size.width;
+    if(UIInterfaceOrientationIsLandscape(orientation) && !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        CGFloat temp = statusBarFrame.size.width;
         statusBarFrame.size.width = statusBarFrame.size.height;
         statusBarFrame.size.height = temp;
     }
-    
+
     CGFloat activeHeight = orientationFrame.size.height;
     
-    if(keyboardHeight > 0)
+    if(keyboardHeight > 0) {
         activeHeight += statusBarFrame.size.height*2;
+    }
     
     activeHeight -= keyboardHeight;
     CGFloat posY = floor(activeHeight*0.45);
@@ -465,7 +452,7 @@ static BOOL ignoreKeyboard = NO;
 
 - (UIWindow *)overlayWindow {
     if(!overlayWindow) {
-        overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreenCurrentOrientationBounds]];
         overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         overlayWindow.backgroundColor = [UIColor clearColor];
         overlayWindow.userInteractionEnabled = NO;
