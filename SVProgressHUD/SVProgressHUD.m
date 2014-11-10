@@ -9,7 +9,6 @@
 
 #import "SVProgressHUD.h"
 #import <QuartzCore/QuartzCore.h>
-#import "UIScreen+SN.h"
 
 @interface SVProgressHUD ()
 
@@ -50,7 +49,11 @@
     static dispatch_once_t once;
     static SVProgressHUD *sharedView;
     dispatch_once(&once, ^ {
-        sharedView = [[SVProgressHUD alloc] initWithFrame:[UIScreen mainScreenNativeBounds]];
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(nativeBounds)]) {
+            sharedView = [[SVProgressHUD alloc] initWithFrame:[UIScreen mainScreen].nativeBounds];
+        } else {
+            sharedView = [[SVProgressHUD alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        }
     });
     return sharedView;
 }
@@ -293,7 +296,14 @@ static BOOL ignoreKeyboard = NO;
         keyboardHeight = 0;
     }
     
-    CGRect orientationFrame = [UIScreen mainScreenCurrentOrientationBounds];
+    CGRect orientationFrame = [UIScreen mainScreen].bounds;
+    
+    if (UIInterfaceOrientationIsLandscape(orientation) && !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")  ) {
+        CGFloat temp = orientationFrame.size.width;
+        orientationFrame.size.width = orientationFrame.size.height;
+        orientationFrame.size.height = temp;
+    }
+    
     CGRect statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
     
     if(UIInterfaceOrientationIsLandscape(orientation) && !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
@@ -452,7 +462,16 @@ static BOOL ignoreKeyboard = NO;
 
 - (UIWindow *)overlayWindow {
     if(!overlayWindow) {
-        overlayWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreenCurrentOrientationBounds]];
+        CGRect orientedScreen = [UIScreen mainScreen].bounds;
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        
+        if (UIInterfaceOrientationIsLandscape(orientation) && !SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")  ) {
+            CGFloat temp = orientedScreen.size.width;
+            orientedScreen.size.width = orientedScreen.size.height;
+            orientedScreen.size.height = temp;
+        }
+        
+        overlayWindow = [[UIWindow alloc] initWithFrame:orientedScreen];
         overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         overlayWindow.backgroundColor = [UIColor clearColor];
         overlayWindow.userInteractionEnabled = NO;
