@@ -49,11 +49,16 @@
     static dispatch_once_t once;
     static SVProgressHUD *sharedView;
     dispatch_once(&once, ^ {
-        if ([[UIScreen mainScreen] respondsToSelector:@selector(nativeBounds)]) {
-            sharedView = [[SVProgressHUD alloc] initWithFrame:[UIScreen mainScreen].nativeBounds];
-        } else {
-            sharedView = [[SVProgressHUD alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        CGRect portraitScreen = [UIScreen mainScreen].bounds;
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        
+        if (UIInterfaceOrientationIsLandscape(orientation) && [SVProgressHUD isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
+            CGFloat temp = portraitScreen.size.width;
+            portraitScreen.size.width = portraitScreen.size.height;
+            portraitScreen.size.height = temp;
         }
+        
+        sharedView = [[SVProgressHUD alloc] initWithFrame:portraitScreen];
     });
     return sharedView;
 }
@@ -280,7 +285,7 @@ static BOOL ignoreKeyboard = NO;
         animationDuration = [[keyboardInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
         
         if(notification.name == UIKeyboardWillShowNotification || notification.name == UIKeyboardDidShowNotification) {
-            if(UIInterfaceOrientationIsPortrait(orientation) || [self isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
+            if(UIInterfaceOrientationIsPortrait(orientation) || [SVProgressHUD isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
                 keyboardHeight = keyboardFrame.size.height;
             } else {
                 keyboardHeight = keyboardFrame.size.width;
@@ -298,7 +303,7 @@ static BOOL ignoreKeyboard = NO;
     
     CGRect orientationFrame = [UIScreen mainScreen].bounds;
     
-    if (UIInterfaceOrientationIsLandscape(orientation) && ![self isSystemVersionEqualToOrGreaterThan:@"8.0"]  ) {
+    if (UIInterfaceOrientationIsLandscape(orientation) && ![SVProgressHUD isSystemVersionEqualToOrGreaterThan:@"8.0"]  ) {
         CGFloat temp = orientationFrame.size.width;
         orientationFrame.size.width = orientationFrame.size.height;
         orientationFrame.size.height = temp;
@@ -306,7 +311,7 @@ static BOOL ignoreKeyboard = NO;
     
     CGRect statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
     
-    if(UIInterfaceOrientationIsLandscape(orientation) && ![self isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
+    if(UIInterfaceOrientationIsLandscape(orientation) && ![SVProgressHUD isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
         CGFloat temp = statusBarFrame.size.width;
         statusBarFrame.size.width = statusBarFrame.size.height;
         statusBarFrame.size.height = temp;
@@ -457,7 +462,7 @@ static BOOL ignoreKeyboard = NO;
     return ([SVProgressHUD sharedView].alpha == 1);
 }
 
-- (BOOL)isSystemVersionEqualToOrGreaterThan:(NSString *)version{
++ (BOOL)isSystemVersionEqualToOrGreaterThan:(NSString *)version{
     return [[[UIDevice currentDevice] systemVersion] compare:version options:NSNumericSearch] != NSOrderedAscending;
 }
 
@@ -465,16 +470,16 @@ static BOOL ignoreKeyboard = NO;
 
 - (UIWindow *)overlayWindow {
     if(!overlayWindow) {
-        CGRect orientedScreen = [UIScreen mainScreen].bounds;
+        CGRect portraitScreen = [UIScreen mainScreen].bounds;
         UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
         
-        if (UIInterfaceOrientationIsLandscape(orientation) && ![self isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
-            CGFloat temp = orientedScreen.size.width;
-            orientedScreen.size.width = orientedScreen.size.height;
-            orientedScreen.size.height = temp;
+        if (UIInterfaceOrientationIsLandscape(orientation) && [SVProgressHUD isSystemVersionEqualToOrGreaterThan:@"8.0"]) {
+            CGFloat temp = portraitScreen.size.width;
+            portraitScreen.size.width = portraitScreen.size.height;
+            portraitScreen.size.height = temp;
         }
         
-        overlayWindow = [[UIWindow alloc] initWithFrame:orientedScreen];
+        overlayWindow = [[UIWindow alloc] initWithFrame:portraitScreen];
         overlayWindow.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         overlayWindow.backgroundColor = [UIColor clearColor];
         overlayWindow.userInteractionEnabled = NO;
