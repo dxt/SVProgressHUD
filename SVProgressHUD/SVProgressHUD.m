@@ -200,9 +200,9 @@ static BOOL ignoreKeyboard = NO;
     CGRect labelRect = CGRectZero;
     
     if(string) {
-        CGSize stringSize = [string sizeWithFont:self.stringLabel.font constrainedToSize:CGSizeMake(200, 300)];
-        stringWidth = stringSize.width;
-        stringHeight = stringSize.height;
+        CGRect stringRect = [string boundingRectWithSize:CGSizeMake(200, 300) options:kNilOptions attributes:@{NSFontAttributeName:self.stringLabel.font} context:nil];
+        stringWidth = ceilf(stringRect.size.width);
+        stringHeight = ceilf(stringRect.size.height);
         hudHeight = 80+stringHeight;
         
         if(stringWidth > hudWidth)
