@@ -40,6 +40,12 @@ typedef NS_ENUM(NSUInteger, SVProgressHUDMaskType) {
 + (void)setDefaultMaskType:(SVProgressHUDMaskType)maskType; // default is SVProgressHUDMaskTypeNone
 + (void)setViewForExtension:(UIView*)view;                  // default is nil, only used if #define SV_APP_EXTENSIONS is set
 
++ (void)setHaveShadow:(BOOL)haveShadow;                     // default is NO
++ (void)setShadowColor:(UIColor*)shadowColor;               // default is [UIColor blackColor]
++ (void)setShadowOpacity:(CGFloat)shadowOpacity;            // default is 0.08f
++ (void)setShadowOffset:(CGSize)shadowOffset;               // default is CGSizeZero
++ (void)setShadowRadius:(CGFloat)shadowRadius;              // default is 3.0f
+
 #pragma mark - Show Methods
 
 + (void)show;
