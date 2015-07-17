@@ -263,9 +263,11 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 }
 
 + (void)dismiss {
+#ifndef SIGNING_ACTION_EXTENSION
     if ([self isVisible]) {
         [[self sharedView] dismiss];
     }
+#endif
 }
 
 
