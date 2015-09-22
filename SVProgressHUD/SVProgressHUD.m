@@ -263,7 +263,7 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 }
 
 + (void)dismiss {
-#ifndef SIGNING_ACTION_EXTENSION
+#ifndef SV_APP_EXTENSIONS
     if ([self isVisible]) {
         [[self sharedView] dismiss];
     }
@@ -524,7 +524,7 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
     
     self.frame = UIScreen.mainScreen.bounds;
     
-#if !defined(SV_APP_EXTENSIONS) && !defined(SIGNING_ACTION_EXTENSION)
+#if !defined(SV_APP_EXTENSIONS)
     UIInterfaceOrientation orientation = UIApplication.sharedApplication.statusBarOrientation;
 #else
     UIInterfaceOrientation orientation = CGRectGetWidth(self.frame) > CGRectGetHeight(self.frame) ? UIInterfaceOrientationLandscapeLeft : UIInterfaceOrientationPortrait;
@@ -553,7 +553,7 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
     }
     
     CGRect orientationFrame = self.bounds;
-#if !defined(SV_APP_EXTENSIONS) && !defined(SIGNING_ACTION_EXTENSION)
+#if !defined(SV_APP_EXTENSIONS)
     CGRect statusBarFrame = UIApplication.sharedApplication.statusBarFrame;
 #else
     CGRect statusBarFrame = CGRectZero;
@@ -641,7 +641,7 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 
 - (void)showProgress:(float)progress status:(NSString*)string maskType:(SVProgressHUDMaskType)hudMaskType {
     if(!self.overlayView.superview){
-#if !defined(SV_APP_EXTENSIONS) && !defined(SIGNING_ACTION_EXTENSION)
+#if !defined(SV_APP_EXTENSIONS)
         NSEnumerator *frontToBackWindows = [UIApplication.sharedApplication.windows reverseObjectEnumerator];
         for (UIWindow *window in frontToBackWindows){
             BOOL windowOnMainScreen = window.screen == UIScreen.mainScreen;
@@ -834,7 +834,7 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
                                                                                userInfo:userInfo];
                              
                              // Tell the rootViewController to update the StatusBar appearance
-#if !defined(SV_APP_EXTENSIONS) && !defined(SIGNING_ACTION_EXTENSION)
+#if !defined(SV_APP_EXTENSIONS)
                              UIViewController *rootController = [[UIApplication sharedApplication] keyWindow].rootViewController;
                              if ([rootController respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
                                  [rootController setNeedsStatusBarAppearanceUpdate];
@@ -1018,7 +1018,7 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 
 
 - (CGFloat)visibleKeyboardHeight {
-#if !defined(SV_APP_EXTENSIONS) && !defined(SIGNING_ACTION_EXTENSION)
+#if !defined(SV_APP_EXTENSIONS)
     UIWindow *keyboardWindow = nil;
     for (UIWindow *testWindow in [[UIApplication sharedApplication] windows]) {
         if(![[testWindow class] isEqual:[UIWindow class]]) {
