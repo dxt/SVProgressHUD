@@ -647,8 +647,9 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
             BOOL windowOnMainScreen = window.screen == UIScreen.mainScreen;
             BOOL windowIsVisible = !window.hidden && window.alpha > 0;
             BOOL windowLevelNormal = window.windowLevel == UIWindowLevelNormal;
+            BOOL isRemoteKeyboardWindow = [window isKindOfClass:NSClassFromString(@"UIRemoteKeyboardWindow")];
             
-            if (windowOnMainScreen && windowIsVisible && windowLevelNormal) {
+            if (windowOnMainScreen && windowIsVisible && windowLevelNormal && !isRemoteKeyboardWindow) {
                 [window addSubview:self.overlayView];
                 break;
             }
