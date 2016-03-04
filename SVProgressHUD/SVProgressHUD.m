@@ -292,9 +292,12 @@ static const CGFloat SVProgressHUDDefaultAnimationDuration = 0.15;
 }
 
 + (void)dismissWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
+#ifndef SV_APP_EXTENSIONS
+// TODO: Remove the above #ifndef when the signing extension uses SVProgressHUD
     if([self isVisible]) {
         [[self sharedView] dismissWithDuration:duration delay:delay];
     }
+#endif
 }
 
 
