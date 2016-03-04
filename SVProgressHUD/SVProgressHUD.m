@@ -581,8 +581,9 @@ static const CGFloat SVProgressHUDDefaultAnimationDuration = 0.15;
             BOOL windowOnMainScreen = window.screen == UIScreen.mainScreen;
             BOOL windowIsVisible = !window.hidden && window.alpha > 0;
             BOOL windowLevelNormal = window.windowLevel == UIWindowLevelNormal;
+            BOOL isRemoteKeyboardWindow = [@"UIRemoteKeyboardWindow" isEqualToString:NSStringFromClass([window class])];
             
-            if(windowOnMainScreen && windowIsVisible && windowLevelNormal) {
+            if(windowOnMainScreen && windowIsVisible && windowLevelNormal && !isRemoteKeyboardWindow) {
                 [window addSubview:self.overlayView];
                 break;
             }
