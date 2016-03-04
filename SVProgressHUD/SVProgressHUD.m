@@ -34,12 +34,6 @@ static UIImage *SVProgressHUDErrorImage;
 static SVProgressHUDMaskType SVProgressHUDDefaultMaskType;
 static UIView *SVProgressHUDExtensionView;
 
-static BOOL SVProgressHUDHaveShadow;
-static UIColor *SVProgressHUDShadowColor;
-static CGFloat SVProgressHUDShadowOpacity;
-static CGSize SVProgressHUDShadowOffset;
-static CGFloat SVProgressHUDShadowRadius;
-
 static const CGFloat SVProgressHUDRingRadius = 18;
 static const CGFloat SVProgressHUDRingNoTextRadius = 24;
 static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
@@ -145,31 +139,6 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 + (void)setViewForExtension:(UIView *)view{
     [self sharedView];
     SVProgressHUDExtensionView = view;
-}
-
-+ (void)setHaveShadow:(BOOL)haveShadow{
-    [self sharedView];
-    SVProgressHUDHaveShadow = haveShadow;
-}
-
-+ (void)setShadowColor:(UIColor*)shadowColor{
-    [self sharedView];
-    SVProgressHUDShadowColor = shadowColor;
-}
-
-+ (void)setShadowOpacity:(CGFloat)shadowOpacity{
-    [self sharedView];
-    SVProgressHUDShadowOpacity = shadowOpacity;
-}
-
-+ (void)setShadowOffset:(CGSize)shadowOffset{
-    [self sharedView];
-    SVProgressHUDShadowOffset = shadowOffset;
-}
-
-+ (void)setShadowRadius:(CGFloat)shadowRadius{
-    [self sharedView];
-    SVProgressHUDShadowRadius = shadowRadius;
 }
 
 
@@ -320,12 +289,6 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 
         SVProgressHUDRingThickness = 2;
         SVProgressHUDDefaultMaskType = SVProgressHUDMaskTypeNone;
-        
-        SVProgressHUDHaveShadow = NO;
-        SVProgressHUDShadowColor = [UIColor blackColor];
-        SVProgressHUDShadowOpacity = 0.08f;
-        SVProgressHUDShadowOffset = CGSizeZero;
-        SVProgressHUDShadowRadius = 3.0f;
     }
 	
     return self;
@@ -424,11 +387,6 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
         }
     }
     self.hudView.bounds = CGRectMake(0.0f, 0.0f, hudWidth, hudHeight);
-    
-    if(SVProgressHUDHaveShadow){
-        UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.hudView.bounds cornerRadius:SVProgressHUDCornerRadius];
-        self.hudView.layer.shadowPath = shadowPath.CGPath;
-    }
     
     if(string){
         self.imageView.center = CGPointMake(CGRectGetWidth(self.hudView.bounds)/2, 36.0f);
@@ -952,15 +910,8 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
         _hudView = [[UIView alloc] initWithFrame:CGRectZero];
         _hudView.backgroundColor = SVProgressHUDBackgroundColor;
         _hudView.layer.cornerRadius = SVProgressHUDCornerRadius;
-        _hudView.layer.masksToBounds = !SVProgressHUDHaveShadow;
-        
-        if(SVProgressHUDHaveShadow){
-            _hudView.layer.shadowColor = SVProgressHUDShadowColor.CGColor;
-            _hudView.layer.shadowOpacity = SVProgressHUDShadowOpacity;
-            _hudView.layer.shadowOffset = SVProgressHUDShadowOffset;
-            _hudView.layer.shadowRadius = SVProgressHUDShadowRadius;
-        }
-        
+        _hudView.layer.masksToBounds = YES;
+
         _hudView.autoresizingMask = (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin |
                                      UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin);
 
