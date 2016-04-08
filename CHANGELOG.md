@@ -1,6 +1,21 @@
-## Version 2.0-beta9 (soon)
+## Version 2.0.3
+* Fixed: Carthage support #592, #590
+
+## Version 2.0.2
+* Fixed: Fixes tvOS demos, Changed return type #586, #587
+* 
+## Version 2.0.1
+* Fixed: Build issues for tvOS, as UIKeyboard notifications are gone #576
+* Fixed: HUD does not hide if ismiss is called directly after show #555
+* Fixed: Reset ring layer stroke end upon dismiss #580
+* Fixed: Ringlayer not resized when values properties change during runtime #584
+
+## Version 2.0
 * Fixed: `:head` not available anymore in Cocoapods #552
 * Fixed: Redraw resource images as the look blurry on 2x/3x. #562
+* Fixed: Problem where displayDurationForString can return duration shoter than minimumDismissTimeInterval #574
+* Fixed: iOS7+ alert black dimming view has an alpha of 0.4, not 0.5 #570
+* Fixed: Bugfix for hidden HUD if defaultMaskStyle is changed during runtime
 
 ## Version 2.0-beta8
 * Fixed: Progress HUD intersects with default spinner #551

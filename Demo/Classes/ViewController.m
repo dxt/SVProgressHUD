@@ -94,7 +94,7 @@ static float progress = 0.0f;
 #pragma mark - Styling
 
 - (IBAction)changeStyle:(id)sender {
-    UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
+    UISegmentedControl *segmentedControl = (UISegmentedControl*)sender;
     if(segmentedControl.selectedSegmentIndex == 0){
         [SVProgressHUD setDefaultStyle:SVProgressHUDStyleLight];
     } else {
@@ -103,7 +103,7 @@ static float progress = 0.0f;
 }
 
 - (IBAction)changeAnimationType:(id)sender {
-    UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
+    UISegmentedControl *segmentedControl = (UISegmentedControl*)sender;
     if(segmentedControl.selectedSegmentIndex == 0){
         [SVProgressHUD setDefaultAnimationType:SVProgressHUDAnimationTypeFlat];
     } else {
@@ -112,15 +112,18 @@ static float progress = 0.0f;
 }
 
 - (IBAction)changeMaskType:(id)sender {
-    UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
+    UISegmentedControl *segmentedControl = (UISegmentedControl*)sender;
     if(segmentedControl.selectedSegmentIndex == 0){
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeNone];
     } else if(segmentedControl.selectedSegmentIndex == 1){
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
     } else if(segmentedControl.selectedSegmentIndex == 2){
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
-    } else {
+    } else if(segmentedControl.selectedSegmentIndex == 3){
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeGradient];
+    } else {
+        [SVProgressHUD setBackgroundLayerColor:[[UIColor redColor] colorWithAlphaComponent:0.4]];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeCustom];
     }
 }
 
